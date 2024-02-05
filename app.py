@@ -61,7 +61,7 @@ while True:
             else: # angry
                 background = cv2.imread('./background-images/angry.jpg')
             background = cv2.resize(background, (frame_width, frame_height))
-            mask = np.stack((segmentation_results.segmentation_mask,)*3, axis=-1) > 0.4 
+            mask = np.stack((segmentation_results.segmentation_mask,)*3, axis=-1) > 0.3 
             frame = np.where(mask, frame, background)
 
             # Display the predicted emotion on top left corner of frame

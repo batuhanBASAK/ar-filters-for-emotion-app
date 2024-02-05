@@ -15,7 +15,7 @@ mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh()
 
 
-NUM_OF_DATA_PER_CLASS = 500
+NUM_OF_DATA_PER_CLASS = 1000
 
 
 X = []
