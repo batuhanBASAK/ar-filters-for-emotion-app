@@ -8,14 +8,14 @@ if cap.isOpened() == False:
     print('Camera counldn\'t been opened')
     exit(1)
 
-labels = ['happy', 'sad', 'angry', 'worried', 'confused']
+labels = ['happy', 'sad', 'angry']
 
 
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh()
 
 
-NUM_OF_DATA_PER_CLASS = 300
+NUM_OF_DATA_PER_CLASS = 500
 
 
 X = []
@@ -48,8 +48,9 @@ while True:
             aux = []
             for facial_landmarks in results.multi_face_landmarks:
                 for l in facial_landmarks.landmark:
-                    aux.append(int(l.x))
-                    aux.append(int(l.y))
+                    aux.append(l.x)
+                    aux.append(l.y)
+                    aux.append(l.z)
             X.append(aux)
             y.append(labels[curr_class])
             i += 1
