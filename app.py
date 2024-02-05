@@ -12,6 +12,9 @@ if cap.isOpened() == False:
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh()
 
+mp_selfie = mp.solutions.selfie_segmentation
+model =  mp_selfie.SelfieSegmentation(model_selection=0)
+
 labels = ['angry', 'happy', 'sad']
 
 with open('model.pickle', 'rb') as handle:
@@ -48,6 +51,20 @@ while True:
             y_pred = np.argmax(clf.predict(X.reshape(1, -1)))
             print(labels[y_pred])
 
+            # segmentate the person from background
+            segmentation_results = model.process(rgb_frame)
+            # change background respect to emotion of person
+            if labels[y_pred] == 'sad':
+                background = cv2.imread('./background-images/sad.jpg')
+            elif labels[y_pred] == 'happy':
+                background = cv2.imread('./background-images/happy.jpg')
+            else: # angry
+                background = cv2.imread('./background-images/angry.jpg')
+            background = cv2.resize(background, (frame_width, frame_height))
+            mask = np.stack((segmentation_results.segmentation_mask,)*3, axis=-1) > 0.4 
+            frame = np.where(mask, frame, background)
+
+            # Display the predicted emotion on top left corner of frame
             cv2.rectangle(frame, (0, 0), (150, 50), (0, 0, 0), -1)
             text = labels[y_pred]
             cv2.putText(frame,
@@ -56,7 +73,7 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX,
                         1,
                         (0, 255, 0),
-                        2) 
+                        2)
 
 
 
@@ -67,7 +84,7 @@ while True:
 
 
     # Display the frame
-    cv2.imshow('Face Landmark Detection', frame)
+    cv2.imshow('AR Emotion Filter Program', frame)
 
 
 
